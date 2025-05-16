@@ -1,8 +1,8 @@
 from main import app
-from asgiref.wsgi import WsgiToAsgi, ASGIToWSGI
+from uvicorn.adapters.wsgi import WSGIMiddleware
 
 # Создаем WSGI-приложение из ASGI-приложения FastAPI
-application = ASGIToWSGI(app)
+application = WSGIMiddleware(app)
 
 # Для совместимости с Waitress
 app = application

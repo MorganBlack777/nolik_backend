@@ -1,1 +1,1 @@
-web: gunicorn wsgi:app -c gunicorn_config.py 
+web: uvicorn asgi:app --host 0.0.0.0 --port $PORT 
