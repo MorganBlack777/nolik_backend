@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.env
+
+# Git
+.git
+.gitignore
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Database
+# Uncomment if you don't want to persist the database
+# tictactoe.db
+
+# Documentation
+README.md
+Бэкенд-разработка_методическиое_пособие.pdf
+
+# Tests
+tests/ 
