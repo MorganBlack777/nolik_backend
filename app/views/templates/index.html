@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Крестики-нолики{% endblock %}
+
+{% block content %}
+<style>
+    .game-item {
+        position: relative;
+    }
+    
+    .delete-game-form {
+        position: absolute;
+        top: 50px;
+        right: 23px;
+        display: none;
+        z-index: 10;
+    }
+    
+    .game-item:hover .delete-game-form {
+        display: block;
+    }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Крестики-нолики</h2>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <img src="{{ url_for('static', path='/images/tictactoe.png') }}" alt="Крестики-нолики" class="img-fluid" style="max-width: 200px;">
+                    <p class="mt-3 lead">Добро пожаловать в онлайн игру "Крестики-нолики"!</p>
+                    <p>Играйте с друзьями или соревнуйтесь с другими игроками в этой классической игре.</p>
+                </div>
+                
+                {% if user %}
+                <div class="mb-4 text-center">
+                    <a href="/games/new" class="btn btn-primary btn-lg mb-2">Новая игра</a>
+                    <a href="/games" class="btn btn-outline-primary btn-lg mb-2 ms-2">Мои игры</a>
+                </div>
+                
+                {% if latest_games %}
+                <div class="mt-4">
+                    <h4>Ваши последние игры:</h4>
+                    <div class="list-group">
+                        {% for game in latest_games %}
+                        <div class="position-relative game-item">
+                            <a href="/games/{{ game.id }}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Игра #{{ game.id }}</h5>
+                                    <span class="badge bg-{{ game.status == 'in_progress' and 'primary' or (game.status == 'draw' and 'warning' or 'success') }}">
+                                        {% if game.status == 'in_progress' %}
+                                            В процессе
+                                        {% elif game.status == 'draw' %}
+                                            Ничья
+                                        {% elif game.status == 'x_won' %}
+                                            Победа X
+                                        {% elif game.status == 'o_won' %}
+                                            Победа O
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <p class="mb-1">
+                                    Игрок X: {{ game.player_x.username }}
+                                    {% if game.player_o %}
+                                    | Игрок O: {{ game.player_o.username }}
+                                    {% else %}
+                                    | Ожидание оппонента
+                                    {% endif %}
+                                </p>
+                                <small>Создана: {{ game.created_at.strftime('%d.%m.%Y %H:%M') }}</small>
+                            </a>
+                            {% if game.status == 'in_progress' %}
+                            <form method="post" action="/games/{{ game.id }}/delete" class="delete-game-form">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Вы уверены, что хотите удалить эту игру?')">Удалить</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% else %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body text-center">
+                                <h4>Уже есть аккаунт?</h4>
+                                <p>Войдите в систему, чтобы начать играть</p>
+                                <a href="/login" class="btn btn-primary">Войти</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body text-center">
+                                <h4>Новый пользователь?</h4>
+                                <p>Зарегистрируйтесь, чтобы начать играть</p>
+                                <a href="/register" class="btn btn-success">Регистрация</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="mt-4">
+                    <h3>Как играть</h3>
+                    <ol>
+                        <li>Зарегистрируйтесь или войдите в систему</li>
+                        <li>Создайте новую игру или присоединитесь к существующей</li>
+                        <li>По очереди заполняйте клетки поля</li>
+                        <li>Побеждает тот, кто первым составит линию из трех своих символов</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./tictactoe.db:/app/tictactoe.db
+    environment:
+      - SECRET_KEY=your_secret_key
+    restart: unless-stopped 

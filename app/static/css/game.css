@@ -1,0 +1,255 @@
+/* Подключаем Bootstrap Icons */
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css");
+
+/* Основные стили контейнера игры */
+.game-container {
+    padding: 2rem 0;
+}
+
+/* Карточка с информацией об игре */
+.game-info-card {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для статуса игры */
+.game-status-wrapper {
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+}
+
+.game-status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.game-status-badge.in-progress {
+    background-color: #cfe2ff;
+    color: #0d6efd;
+}
+
+.game-status-badge.winner {
+    background-color: #d1e7dd;
+    color: #198754;
+}
+
+.game-status-badge.draw {
+    background-color: #fff3cd;
+    color: #ffc107;
+}
+
+.current-turn {
+    font-size: 1.1rem;
+}
+
+.turn-player {
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.player-x {
+    color: #3498db;
+}
+
+.player-o {
+    color: #e74c3c;
+}
+
+/* Стили для информации об игроках */
+.player-symbol {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.player-symbol.player-x {
+    background-color: #e6f3ff;
+}
+
+.player-symbol.player-o {
+    background-color: #ffe6e6;
+}
+
+/* Стили для деталей игры */
+.detail-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.detail-value {
+    font-weight: 500;
+}
+
+/* Стили для игрового поля */
+.game-board-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.game-board-container {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.tictactoe-board {
+    border-collapse: collapse;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    background-color: #333;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.tictactoe-board td {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    background-color: white;
+    border: 4px solid #333;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.board-symbol {
+    font-size: 90px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.symbol-X {
+    color: #3498db;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.symbol-O {
+    color: #e74c3c;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cell-button {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.02);
+    border: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border-radius: 4px;
+}
+
+.cell-button::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.03);
+    transition: all 0.2s;
+}
+
+.cell-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.cell-button:hover::before {
+    width: 70px;
+    height: 70px;
+    background-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Стили для адаптивности */
+@media (max-width: 992px) {
+    .tictactoe-board td {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .board-symbol {
+        font-size: 70px;
+    }
+}
+
+@media (max-width: 768px) {
+    .tictactoe-board td {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .board-symbol {
+        font-size: 60px;
+    }
+}
+
+@media (max-width: 576px) {
+    .tictactoe-board td {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .board-symbol {
+        font-size: 50px;
+    }
+    
+    .game-board-wrapper {
+        padding: 1rem;
+    }
+}
+
+/* Простой вариант игровой доски для fallback */
+.basic-tictactoe {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+.basic-tictactoe td {
+    width: 33.33%;
+    height: 0;
+    padding-bottom: 33.33%;
+    position: relative;
+    border: 3px solid #333;
+    background-color: #fff;
+}
+
+.basic-tictactoe-cell {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5vw;
+    font-weight: bold;
+}
+
+.basic-cell-button {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+} 

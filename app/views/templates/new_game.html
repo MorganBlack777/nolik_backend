@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Новая игра - Крестики-нолики{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title text-center">Создать новую игру</h3>
+            </div>
+            <div class="card-body">
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+                
+                <div class="alert alert-info mb-3">
+                    <p class="mb-1"><strong>Внимание!</strong> Вы можете присоединиться к существующим играм.</p>
+                    <a href="/games" class="btn btn-sm btn-outline-primary mt-2">Посмотреть открытые игры</a>
+                </div>
+                
+                <form method="post" action="/games/new">
+                    <div class="mb-3">
+                        <label for="player_o_id" class="form-label">Выберите оппонента</label>
+                        <select class="form-select" id="player_o_id" name="player_o_id">
+                            <option value="bot" selected>Bot</option>
+                            <option value="player1">Player 1</option>
+                            <option value="player2">Player 2</option>
+                            {% for user in users %}
+                            <option value="{{ user.id }}">{{ user.username }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">
+                            Если вы выберете "Bot", то будете играть против компьютера. Если выберете другого игрока, то будете играть против него.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="board_size" class="form-label">Размер поля</label>
+                        <select class="form-select" id="board_size" name="board_size">
+                            <option value="3">3x3 (классика)</option>
+                            <option value="4">4x4</option>
+                            <option value="5">5x5</option>
+                            <option value="6">6x6</option>
+                            <option value="7">7x7</option>
+                            <option value="8">8x8</option>
+                            <option value="9">9x9</option>
+                            <option value="10">10x10</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="win_length" class="form-label">Длина для победы</label>
+                        <select class="form-select" id="win_length" name="win_length">
+                            <option value="3">3 в ряд</option>
+                            <option value="4">4 в ряд</option>
+                            <option value="5">5 в ряд</option>
+                        </select>
+                        <div class="form-text">
+                            Количество символов в ряд, необходимое для победы
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Создать игру</button>
+                        <a href="/games" class="btn btn-outline-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Информация об игре</h5>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li>Вы будете играть символом <strong>X</strong> и ходить первым</li>
+                    <li>Ваш оппонент будет играть символом <strong>O</strong></li>
+                    <li>Победит тот, кто сможет выстроить необходимое количество своих символов в ряд по горизонтали, вертикали или диагонали</li>
+                    <li>Если все ячейки заполнены, а победитель не определен, игра заканчивается ничьей</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('board_size').addEventListener('change', function() {
+    var winLength = document.getElementById('win_length');
+    var boardSize = parseInt(this.value);
+    
+    // Clear existing options
+    winLength.innerHTML = '';
+    
+    // Add new options based on board size
+    for (var i = 3; i <= Math.min(5, boardSize); i++) {
+        var option = document.createElement('option');
+        option.value = i;
+        option.text = i + ' в ряд';
+        winLength.appendChild(option);
+    }
+});
+</script>
+{% endblock %}

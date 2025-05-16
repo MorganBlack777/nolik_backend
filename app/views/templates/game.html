@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}Игра #{{ game.id }} - Крестики-нолики{% endblock %}
+
+{% block content %}
+<!-- Скрытые поля для JS -->
+<input type="hidden" id="game-status" value="{{ game.status }}">
+<input type="hidden" id="can-play" value="{{ can_play }}">
+
+<div class="container py-4">
+    <div class="row">
+        <!-- Левая панель информации -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Информация об игре</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        {% if game.status == 'in_progress' %}
+                            <div class="alert alert-primary">
+                                Игра идет
+                            </div>
+                            <p class="mt-2">
+                                <strong>Ход:</strong> 
+                                <span class="badge {% if current_player == 'X' %}bg-primary{% else %}bg-danger{% endif %}">
+                                    {{ current_player }}
+                                </span>
+                            </p>
+                        {% elif game.status == 'x_won' %}
+                            <div class="alert alert-success">
+                                Победитель: X
+                            </div>
+                        {% elif game.status == 'o_won' %}
+                            <div class="alert alert-success">
+                                Победитель: O
+                            </div>
+                        {% elif game.status == 'draw' %}
+                            <div class="alert alert-warning">
+                                Ничья
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <h6 class="border-bottom pb-2 mb-3">Игроки</h6>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>X:</span>
+                            <strong>{{ game.player_x.username }}</strong>
+                            {% if game.status == 'in_progress' and current_player == 'X' %}
+                                <span class="badge bg-secondary">Ходит</span>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>O:</span>
+                            <strong>
+                                {% if game.player_o %}
+                                    {{ game.player_o.username }}
+                                {% else %}
+                                    Ожидание соперника...
+                                {% endif %}
+                            </strong>
+                            {% if game.status == 'in_progress' and current_player == 'O' %}
+                                <span class="badge bg-secondary">Ходит</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <h6 class="border-bottom pb-2 mb-3">Детали</h6>
+                    <div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>ID игры:</span>
+                            <strong>{{ game.id }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Создана:</span>
+                            <strong>{{ game.created_at.strftime('%d.%m.%Y %H:%M') }}</strong>
+                        </div>
+                        {% if game.is_bot_game %}
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Тип игры:</span>
+                            <strong>Против бота</strong>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <a href="/games" class="btn btn-outline-primary w-100 mt-3">
+                        Назад к списку игр
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Правая панель с игровым полем -->
+        <div class="col-md-8">
+            <div class="p-4 bg-light rounded shadow-sm text-center">
+                <h2 class="mb-4">Игра #{{ game.id }}</h2>
+                
+                <!-- Простая и надежная игровая доска -->
+                <div class="mb-4" style="max-width: 600px; margin: 0 auto;">
+                    <table class="table table-bordered bg-white" style="table-layout: fixed;">
+                        {% for row in range(game.board_size) %}
+                        <tr style="height: 80px;">
+                            {% for col in range(game.board_size) %}
+                            <td class="position-relative" style="width: {{ 100 / game.board_size }}%; height: 80px; cursor: pointer;">
+                                {% if board[row][col] %}
+                                    <span class="position-absolute top-50 start-50 translate-middle fs-1 fw-bold {% if board[row][col] == 'X' %}text-primary{% else %}text-danger{% endif %}">
+                                        {{ board[row][col] }}
+                                    </span>
+                                {% elif can_play %}
+                                    <form method="post" action="/games/{{ game.id }}/moves" class="h-100">
+                                        <input type="hidden" name="row" value="{{ row }}">
+                                        <input type="hidden" name="col" value="{{ col }}">
+                                        <button type="submit" class="btn w-100 h-100 btn-light btn-outline-secondary" style="opacity: 0.5;">
+                                            <span class="visually-hidden">Сделать ход</span>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                
+                {% if can_play %}
+                <div class="alert alert-info">
+                    Ваш ход! Выберите клетку для хода.
+                </div>
+                {% endif %}
+                
+                {% if game.is_bot_game and game.status == 'in_progress' and not can_play %}
+                <div class="alert alert-warning">
+                    Бот обдумывает свой ход...
+                </div>
+                {% endif %}
+                
+                {% if game.status != 'in_progress' %}
+                <a href="/games/new" class="btn btn-primary btn-lg mt-3">
+                    Начать новую игру
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<!-- Подключаем Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<style>
+    /* Стили для информационной панели */
+    .badge {
+        font-size: 1rem;
+    }
+    
+    /* Стили для игровой доски */
+    .table-bordered {
+        border: 3px solid #333;
+    }
+    
+    .table-bordered td {
+        border: 3px solid #333;
+    }
+    
+    /* Стили для игровых символов */
+    .text-primary {
+        color: #3498db !important;
+    }
+    
+    .text-danger {
+        color: #e74c3c !important;
+    }
+    
+    /* Улучшенные стили для кнопок */
+    .btn-light:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+        opacity: 0.7 !important;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Подсветка ячеек при наведении
+    var buttons = document.querySelectorAll('.btn-light');
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener('mouseover', function() {
+            this.style.opacity = '0.7';
+        });
+        buttons[i].addEventListener('mouseout', function() {
+            this.style.opacity = '0.5';
+        });
+    }
+});
+</script>
+
+<!-- Обновление страницы для бота -->
+{% if game.status == 'in_progress' and not can_play %}
+    {% if game.is_bot_game %}
+    <meta   http-equiv="refresh" content="1">
+    {% else %}
+    <meta http-equiv="refresh" content="2">
+    {% endif %}
+{% endif %}
+{% endblock %} 
