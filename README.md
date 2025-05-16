@@ -50,8 +50,21 @@ uvicorn main:app --reload
 
 ### Для продакшена
 
+#### На Linux/macOS:
 ```bash
 gunicorn wsgi:app -c gunicorn_config.py
+```
+
+#### На Windows:
+```bash
+# Вариант 1: Через BAT-файл
+run_server.bat
+
+# Вариант 2: Напрямую через Waitress
+waitress-serve --host=0.0.0.0 --port=80 wsgi:application
+
+# Вариант 3: Через Python-скрипт
+python waitress_serve.py
 ```
 
 или
