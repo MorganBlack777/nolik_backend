@@ -1,7 +1,7 @@
 fastapi>=0.104.0
 uvicorn>=0.23.2
 gunicorn>=21.2.0
-waitress>=3.0.0
+waitress
 sqlalchemy>=2.0.23
 pydantic>=2.4.2
 python-jose>=3.3.0
