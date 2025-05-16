@@ -15,4 +15,5 @@ pymysql==1.1.0
 python-dotenv==1.0.0
 pytest==7.4.3
 httpx==0.25.1
-cryptography==41.0.5 
+cryptography==41.0.5
+asgiref>=3.7.2 

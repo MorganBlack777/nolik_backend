@@ -1,7 +1,11 @@
 from main import app
+from asgiref.wsgi import WsgiToAsgi, ASGIToWSGI
+
+# Создаем WSGI-приложение из ASGI-приложения FastAPI
+application = ASGIToWSGI(app)
 
 # Для совместимости с Waitress
-application = app
+app = application
 
 if __name__ == "__main__":
     # Этот файл используется для запуска приложения через WSGI-сервер
